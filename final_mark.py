@@ -23,6 +23,8 @@ def percentages():
     mark_a = round(((85 - (mark_earned - mark_loss + bonus))/exam_weight)*100, 2)
     mark_a_minus = round(((80 - (mark_earned - mark_loss + bonus))/exam_weight)*100, 2)
 
+    pass_grade = round(((50 - (mark_earned - mark_loss + bonus))/exam_weight)*100, 2)
+
     marks = [mark_needed, mark_a, mark_a_minus]
 
     print(f"You need {mark_needed}% on the final exam for an A+")
@@ -31,7 +33,15 @@ def percentages():
 
     print(f"You need {mark_a_minus}% on the final exam for an A-")
 
-    return marks
+    if not pass_grade <= 0:
+        print(f"You need {pass_grade}% on the final exam for an A-")
+
+    return {
+        "A+": mark_needed,
+        "A": mark_a,
+        "A-": mark_a_minus,
+        "Pass": pass_grade
+    }
 
 if __name__ == "__main__":
     percentages()
