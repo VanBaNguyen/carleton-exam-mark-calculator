@@ -175,3 +175,7 @@ cython_debug/
 
 __pycache__/
 *.py[cod]
+marks_needed.txt
+ex.csv
+results.txt
+void/
