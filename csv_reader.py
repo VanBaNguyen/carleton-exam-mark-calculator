@@ -115,3 +115,62 @@ def format_course(course, results):
     lines.append("")
     return "\n".join(lines)
 
+
+def process_csv(filepath):
+    """Read CSV, compute results for each course, print and save to result.txt."""
+    courses = []
+
+    with open(filepath, newline="") as f:
+        reader = csv.reader(f)
+
+        # Skip header row if first cell looks non-numeric and contains letters
+        first_row = next(reader, None)
+        if first_row:
+            first_cell = first_row[0].strip().lower()
+            # Heuristic: if the header contains common header words, skip it
+            if any(word in first_cell for word in ["name", "course", "optional"]):
+                pass  # skip header
+            else:
+                parsed = parse_row(first_row)
+                if parsed:
+                    courses.append(parsed)
+
+        for row in reader:
+            parsed = parse_row(row)
+            if parsed:
+                courses.append(parsed)
+
+    if not courses:
+        print("No valid course data found in the CSV file.")
+        return
+
+    output_lines = []
+    for course in courses:
+        results = compute_results(course)
+        text = format_course(course, results)
+        output_lines.append(text)
+
+    full_output = "\n".join(output_lines)
+
+    # Print to console
+    print(full_output)
+
+    # Save to result.txt in the same directory as the CSV
+    out_dir = os.path.dirname(os.path.abspath(filepath))
+    out_path = os.path.join(out_dir, "result.txt")
+    with open(out_path, "w") as f:
+        f.write(full_output)
+    print(f"Results saved to {out_path}")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        csv_file = os.path.join(os.path.dirname(__file__), "ex.csv")
+    else:
+        csv_file = sys.argv[1]
+
+    if not os.path.exists(csv_file):
+        print(f"File not found: {csv_file}")
+        sys.exit(1)
+
+    process_csv(csv_file)
