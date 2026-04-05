@@ -61,3 +61,57 @@ def parse_row(row):
         "marks": marks,
     }
 
+
+def compute_results(course):
+    """Compute marks gained, marks lost, and required exam scores."""
+    exam_weight = course["exam_weight"]
+    bonus = course["bonus"]
+    marks = course["marks"]
+
+    pre_exam_weight = 100 - exam_weight
+    marks_gained = sum(marks)
+    marks_lost = pre_exam_weight - marks_gained
+
+    results = {}
+    for grade, threshold in GRADE_THRESHOLDS.items():
+        needed = (threshold - marks_gained - bonus) / exam_weight * 100
+        results[grade] = round(needed, 2)
+
+    return {
+        "pre_exam_weight": pre_exam_weight,
+        "marks_gained": marks_gained,
+        "marks_lost": round(marks_lost, 2),
+        "bonus": bonus,
+        "exam_weight": exam_weight,
+        "grades": results,
+    }
+
+
+def format_course(course, results):
+    """Format the output for a single course."""
+    lines = []
+
+    header = f"For {course['name']}:" if course["name"] else "Results:"
+    lines.append(header)
+    lines.append("")
+    lines.append(f"  Pre-exam weight: {results['pre_exam_weight']}%")
+    lines.append(f"  Marks gained:    {results['marks_gained']}%")
+    lines.append(f"  Marks lost:      {results['marks_lost']}%")
+    if results["bonus"] > 0:
+        lines.append(f"  Bonus:           {results['bonus']}%")
+    lines.append(f"  Exam weight:     {results['exam_weight']}%")
+    lines.append("")
+
+    grades = results["grades"]
+
+    lines.append(f"  You need {grades['A+']}% on the final exam for an A+")
+    lines.append(f"  You need {grades['A']}% on the final exam for an A")
+    lines.append(f"  You need {grades['A-']}% on the final exam for an A-")
+    lines.append(f"  You need {grades['B+']}% on the final exam for a B+")
+    lines.append(f"  You need {grades['B']}% on the final exam for a B")
+    if grades["Pass"] > 0:
+        lines.append(f"  You need {grades['Pass']}% on the final exam to pass")
+
+    lines.append("")
+    return "\n".join(lines)
+
