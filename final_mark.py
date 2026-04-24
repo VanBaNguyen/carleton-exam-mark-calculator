@@ -48,15 +48,19 @@ def percentages():
 
     exam_weight = 100 - mark_earned
 
-    mark_needed = round(((90 - (mark_earned - mark_loss + bonus))/exam_weight)*100, 2)
+    current_mark = mark_earned - mark_loss + bonus
+    
+    def calculate_required(target):
+        if exam_weight <= 0:
+            return 0.0 if current_mark >= target else 100.0
+        return max(0.0, round(((target - current_mark) / exam_weight) * 100, 2))
 
-    mark_a = round(((85 - (mark_earned - mark_loss + bonus))/exam_weight)*100, 2)
-    mark_a_minus = round(((80 - (mark_earned - mark_loss + bonus))/exam_weight)*100, 2)
-
-    mark_b_plus= round(((77 - (mark_earned - mark_loss + bonus))/exam_weight)*100, 2)
-    mark_b= round(((73 - (mark_earned - mark_loss + bonus))/exam_weight)*100, 2)
-
-    pass_grade = round(((50 - (mark_earned - mark_loss + bonus))/exam_weight)*100, 2)
+    mark_needed = calculate_required(90)
+    mark_a = calculate_required(85)
+    mark_a_minus = calculate_required(80)
+    mark_b_plus = calculate_required(77)
+    mark_b = calculate_required(73)
+    pass_grade = calculate_required(50)
 
     marks = [mark_needed, mark_a, mark_a_minus]
 
