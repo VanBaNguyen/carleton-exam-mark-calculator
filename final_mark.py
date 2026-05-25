@@ -60,6 +60,7 @@ def percentages():
     mark_a_minus = calculate_required(80)
     mark_b_plus = calculate_required(77)
     mark_b = calculate_required(73)
+    mark_b_minus = calculate_required(70)
     pass_grade = calculate_required(50)
 
     marks = [mark_needed, mark_a, mark_a_minus]
@@ -72,6 +73,7 @@ def percentages():
 
     print(f"You need {mark_b_plus}% on the final exam for a B+")
     print(f"You need {mark_b}% on the final exam for a B")
+    print(f"You need {mark_b_minus}% on the final exam for a B-")
 
     if not pass_grade <= 0:
         print(f"You need {pass_grade}% on the final exam to pass")
